@@ -481,3 +481,9 @@ For each test case, output the minimum number of operations needed to make the p
 
 
 */
+#include <bits/stdc++.h>    
+using namespace std;
+
+int main() {
+    return 0;
+}
