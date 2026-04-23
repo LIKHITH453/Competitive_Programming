@@ -37,9 +37,52 @@ long long dfs(int pos, int tight, int leadingZero, other states...) {
 }
 
 
+*/
+/*
 
+Example1. Count how many numbers from 0 to N that does not contain digit 4.
 
+Let us take N = 57
+valid numbers are 0,1,2,3,5,6,7,8,9,10,11,...39,50,51,...57
 
+This is a digit DP problem where we want to count valid numbers up to N with the constraint that they do not contain the digit 4.
+We can define our DP states as follows:
+1. pos: the current digit index we are processing (from left to right)
+2. tight: whether we are still bound by the prefix of N (1 if we are still bound, 0 if we have already formed a smaller number)
+3. leadingZero: whether we have only placed leading zeros so far (1 if we haven't placed any non-zero digit yet, 0 otherwise)
+The transitions will involve iterating over the possible digits we can place at the current position, ensuring that we do not place the digit 4 and that we respect the tight constraint when necessary.
+The final answer will be found in the DP state corresponding to the last digit position with tight = 0 (if we want numbers less than N) or tight = 1 (if we want numbers less than or equal to N).  
 
 
 */
+
+#include <bits/stdc++.h>
+using namespace std;
+
+long long dfs(int pos, int tight, int leadingZero, const string &N, vector<vector<vector<long long>>> &memo) {
+    if(pos == N.size()) {
+        return 1; // Base case: we have processed all digits and found a valid number
+    }
+    if(memo[pos][tight][leadingZero] != -1) {
+        return memo[pos][tight][leadingZero]; // Return memoized result
+    }
+
+    long long ans = 0;
+    int maxDigit = tight ? (N[pos] - '0') : 9; // If tight, we can only go up to the digit in N at this position
+    for(int d = 0; d <= maxDigit; d++) {
+        if(d == 4) continue; // Skip digit 4
+        int newTight = (tight && (d == maxDigit)) ? 1 : 0; // If we choose the max digit, we remain tight
+        int newLeadingZero = (leadingZero && (d == 0)) ? 1 : 0; // If we choose a non-zero digit, we are no longer leading zero
+        ans += dfs(pos + 1, newTight, newLeadingZero, N, memo); // Recur for the next position
+    }
+    return memo[pos][tight][leadingZero] = ans; // Memoize the result before returning
+}
+
+
+int main() {
+    string N;
+    cin >> N;
+    vector<vector<vector<long long>>> memo(N.size(), vector<vector<long long>>(2, vector<long long>(2, -1)));
+    cout << dfs(0, 1, 1, N, memo) << endl; // Start from the first digit, tight = 1 (we are bound by N), leadingZero = 1 (we haven't placed any non-zero digit yet)
+    return 0;
+}
