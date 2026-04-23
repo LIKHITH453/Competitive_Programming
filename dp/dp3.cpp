@@ -54,7 +54,7 @@ The transitions will involve iterating over the possible digits we can place at 
 The final answer will be found in the DP state corresponding to the last digit position with tight = 0 (if we want numbers less than N) or tight = 1 (if we want numbers less than or equal to N).  
 
 
-*/
+
 
 #include <bits/stdc++.h>
 using namespace std;
@@ -84,5 +84,41 @@ int main() {
     cin >> N;
     vector<vector<vector<long long>>> memo(N.size(), vector<vector<long long>>(2, vector<long long>(2, -1)));
     cout << dfs(0, 1, 1, N, memo) << endl; // Start from the first digit, tight = 1 (we are bound by N), leadingZero = 1 (we haven't placed any non-zero digit yet)
+    return 0;
+}
+*/
+
+/*
+
+2.Count the number if digits from a to b where no 2 adjacent digits are the same.
+
+*/
+
+#include <bits/stdc++.h>
+using namespace std;
+
+long long dfs(int pos, int tight, int leadingZero, int prevDigit, const string &N, vector<vector<vector<vector<long long>>>> &memo) {
+    if(pos == N.size()) {
+        return 1; // Base case: we have processed all digits and found a valid number
+    }
+    if(memo[pos][tight][leadingZero][prevDigit] != -1) {
+        return memo[pos][tight][leadingZero][prevDigit]; // Return memoized result
+    }
+
+    long long ans = 0;
+    int maxDigit = tight ? (N[pos] - '0') : 9; // If tight, we can only go up to the digit in N at this position
+    for(int d = 0; d <= maxDigit; d++) {
+        if(d == prevDigit) continue; // Skip if the current digit is the same as the previous digit
+        int newTight = (tight && (d == maxDigit)) ? 1 : 0; // If we choose the max digit, we remain tight
+        int newLeadingZero = (leadingZero && (d == 0)) ? 1 : 0; // If we choose a non-zero digit, we are no longer leading zero
+        ans += dfs(pos + 1, newTight, newLeadingZero, d, N, memo); // Recur for the next position with the current digit as the new previous digit
+    }
+    return memo[pos][tight][leadingZero][prevDigit] = ans; // Memoize the result before returning
+}
+int main() {
+    string N;
+    cin >> N;
+    vector<vector<vector<vector<long long>>>> memo(N.size(), vector<vector<vector<long long>>>(2, vector<vector<long long>>(2, vector<long long>(10, -1))));
+    cout << dfs(0, 1, 1, -1, N, memo) << endl; // Start from the first digit, tight = 1 (we are bound by N), leadingZero = 1 (we haven't placed any non-zero digit yet), prevDigit = -1 (no previous digit)
     return 0;
 }
