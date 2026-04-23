@@ -1,0 +1,45 @@
+/*
+Digit DP is a technique to count or compute something about numbers by processing their digits one-by-one(From most significant to least significant).
+Instead of iterating every number up to N we treat the digit of N as a boundary and use DP to count all the valid digit sequences that form numbers <= N.
+We build a DP over position (digit) plus extra states to track constraints (like whether we are still bounded by N's digits or if we have started forming a smaller number).
+This allows us to solve problems that would be infeasible with brute force, especially when N can
+
+CORE IDEA-
+1.pos - current digit index (0 .. length of N - 1) usually process digits from left to right
+2.tight - whether we are still bound by the prefix of N (1 if we are still bound, 0 if we have already formed a smaller number)
+3.leading Zeros - whether we still have only leading zeros (we haven't placed any non-zero digit yet).
+useful for problems where leading zeros shouldn't count towards sum or previous digit constraints.
+
+Additional states can be needed such as sumSoFar, modSoFar, prevdigit, countOfSomething, etc. depending on the problem.
+The DP transitions will depend on the current state and the digit we choose to place at the current position, and we will also need to consider the constraints imposed by the tight state.
+The final answer is usually found in the DP state corresponding to the last digit position with tight = 0 (if we want numbers less than N) or tight = 1 (if we want numbers less than or equal to N).
+The time complexity of digit DP is generally O(length of N * number of states * number of digit choices) which is efficient for reasonably large N (up to 10^18 or more).
+
+Template for digit DP problems:(recursive with memoization)
+
+long long dfs(int pos, int tight, int leadingZero, other states...) {
+    if(pos == length of N) {
+        // Base case: we have processed all digits
+        return some value based on the other states;
+    }
+    if (memorized) return memo;
+
+    long long ans = 0;
+    int maxDigit = tight ? digit[pos] : 9; // If tight, we can only go up to the digit in N at this position
+    for (int d = 0; d <= maxDigit; d++) {
+        int newTight = tight && (d == maxDigit) ? 1 : 0; // If we choose the max digit, we remain tight
+        int newLeadingZero = leadingZero && (d == 0) ? 1 : 0; // If we choose a non-zero digit, we are no longer leading zero
+        // Update other states based on the chosen digit d
+        ans += dfs(pos + 1, newTight, newLeadingZero, updated other states...);
+    }
+    // Memoize the result before returning
+    return ans;
+}
+
+
+
+
+
+
+
+*/
