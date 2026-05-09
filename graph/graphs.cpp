@@ -269,3 +269,22 @@ void DFS(int v) {
     return 0;
 }
 */
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 1e5 + 10;
+vector<int> g[N];
+
+int main() {
+    int n, m;
+    cin >> n >> m;
+    for (const auto& _ : ranges::iota_view(1, m + 1)) {
+        int u, v;
+        cin >> u >> v;
+        g[u].push_back(v);
+        g[v].push_back(u);
+    }
+    return 0;   
+}
