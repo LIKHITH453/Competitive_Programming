@@ -1,0 +1,1 @@
+{"name":"Local: graphs","url":"/home/saitama/Desktop/C++/cp/graph/graphs.cpp","tests":[{"id":1778401756149,"input":"2\n2 1\n4 1\n","output":"0"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"/home/saitama/Desktop/C++/cp/graph/graphs.cpp","group":"local","local":true}

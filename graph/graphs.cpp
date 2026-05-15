@@ -268,7 +268,7 @@ void DFS(int v) {
     DFS(source); // Call the DFS function
     return 0;
 }
-*/
+
 
 
 #include <bits/stdc++.h>
@@ -276,6 +276,23 @@ using namespace std;
 
 const int N = 1e5 + 10;
 vector<int> g[N];
+bool visited[N];
+
+
+void dfs (int vertices) {
+    // Take action on the vertex after entering the vertex
+    if(visited[vertices]) return; // If the vertex is already visited, return
+    cout<<"Entering vertex: "<<vertices<<endl; // Print the vertex when we enter it
+    visited[vertices] = true; // Mark the vertex as visited
+    for (auto& child : g[vertices]) {
+     cout<<"Parent: "<<vertices<<" Child: "<<child<<endl; // Print the parent and child nodes
+     // Take action on the child before entering the child node
+        dfs(child);
+     // Take action on the child after exiting the child node
+    }
+
+    //Take action on the vertex before exiting the vertex
+}
 
 int main() {
     int n, m;
@@ -286,5 +303,107 @@ int main() {
         g[u].push_back(v);
         g[v].push_back(u);
     }
+    dfs(n);
     return 0;   
+}
+
+*/
+
+
+//Given m girls and n boys find maximum pairs that can be formend whose weighted difference is at most 1
+// Idea : Sort the weights of both groups and use two pointers to find the maximum number of valid pairs.
+/*
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    int m, n;
+    cin >> n >> m;
+    vector<int> girls(m);
+    vector<int> boys(n);
+    for (int i = 0; i < n; i++) {
+        cin >> boys[i];
+    }
+    for (int i = 0; i < m; i++) {
+        cin >> girls[i];
+    }
+    sort(girls.begin(), girls.end());
+    sort(boys.begin(), boys.end());
+    int pairs = 0;
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            if (abs(boys[i] - girls[j]) < 2) {
+                pairs++;
+                break;
+            }
+        }
+    }
+    cout << pairs << endl;
+    return 0;
+}
+*/
+
+/*
+217A: Ice Skating
+time limit per test
+2 seconds
+memory limit per test
+256 megabytes
+
+Bajtek is learning to skate on ice. He's a beginner, so his only mode of transportation is pushing off from a snow drift to the north, east, south or west and sliding until he lands in another snow drift. He has noticed that in this way it's impossible to get from some snow drifts to some other by any sequence of moves. He now wants to heap up some additional snow drifts, so that he can get from any snow drift to any other one. He asked you to find the minimal number of snow drifts that need to be created.
+
+We assume that Bajtek can only heap up snow drifts at integer coordinates.
+Input
+
+The first line of input contains a single integer n (1 ≤ n ≤ 100) — the number of snow drifts. Each of the following n lines contains two integers xi and yi (1 ≤ xi, yi ≤ 1000) — the coordinates of the i-th snow drift.
+
+Note that the north direction coinсides with the direction of Oy axis, so the east direction coinсides with the direction of the Ox axis. All snow drift's locations are distinct.
+Output
+
+Output the minimal number of snow drifts that need to be created in order for Bajtek to be able to reach any snow drift from any other one.
+
+
+Idea: We can model the snow drifts as nodes in a graph, and there is an edge between two nodes if they are in the same row or the same column. The problem then reduces to finding the number of connected components in this graph. The minimum number of additional snow drifts needed will be one less than the number of connected components, since we can connect all components together with one less edge than the number of components.
+*/
+
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<int> adj[1005]; // Adjacency list for the graph
+bool visited[1005]; // To keep track of visited nodes
+
+void DFS(int vertex) {
+    visited[vertex] = true; // Mark the current vertex as visited
+    for (auto& child : adj[vertex]) { // Iterate through all adjacent vertices
+        if (!visited[child]) { // If the adjacent vertex is not visited
+            DFS(child); // Recursively call DFS on the adjacent vertex
+        }
+    }
+}
+
+int main() {
+    int n; // Number of snow drifts
+    cin >> n;
+    vector<pair<int, int>> snowDrifts(n); // To store the coordinates of snow drifts
+    for (int i = 0; i < n; i++) {
+        cin >> snowDrifts[i].first >> snowDrifts[i].second; // Input the coordinates of each snow drift
+    }
+    // Build the graph based on the coordinates of the snow drifts
+    for (int i = 0; i < n; i++) {
+        for (int j = i + 1; j < n; j++) {
+            if (snowDrifts[i].first == snowDrifts[j].first || snowDrifts[i].second == snowDrifts[j].second) {
+                adj[i].push_back(j); // Add an edge between vertex i and vertex j
+                adj[j].push_back(i); // Add an edge between vertex j and vertex i
+            }
+        }
+    }
+    int connectedComponents = 0; // To count the number of connected components in the graph
+    for (int i = 0; i < n; i++) {
+        if (!visited[i]) { // If the vertex is not visited
+            DFS(i); // Perform DFS to mark all vertices in this component as visited
+            connectedComponents++; // Increment the count of connected components
+        }
+    }
+    cout << connectedComponents - 1 << endl; // Output the minimum number of additional snow drifts needed
+    return 0;
 }
