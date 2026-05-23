@@ -1,0 +1,1 @@
+{"name":"Local: graphs","url":"/home/saitama/Desktop/C++/Competitive_Programming/graph/graphs.cpp","tests":[{"id":1779543311653,"input":"2\n3\n0 1 0\n3\n1 1 0\n","output":"1 4 2 3 \n4 1 2 3 \n"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"/home/saitama/Desktop/C++/Competitive_Programming/graph/graphs.cpp","group":"local","local":true}

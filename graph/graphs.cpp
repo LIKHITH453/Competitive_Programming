@@ -364,7 +364,7 @@ Output the minimal number of snow drifts that need to be created in order for Ba
 
 
 Idea: We can model the snow drifts as nodes in a graph, and there is an edge between two nodes if they are in the same row or the same column. The problem then reduces to finding the number of connected components in this graph. The minimum number of additional snow drifts needed will be one less than the number of connected components, since we can connect all components together with one less edge than the number of components.
-*/
+
 
 #include <bits/stdc++.h>
 using namespace std;
@@ -407,3 +407,101 @@ int main() {
     cout << connectedComponents - 1 << endl; // Output the minimum number of additional snow drifts needed
     return 0;
 }
+
+*/
+
+/*
+1559-C
+C. Mocha and Hiking
+time limit per test
+1 second
+memory limit per test
+256 megabytes
+
+The city where Mocha lives in is called Zhijiang. There are n+1 villages and 2n−1 directed roads in this city.
+
+There are two kinds of roads:
+
+    n−1 roads are from village i to village i+1, for all 1≤i≤n−1.
+    n roads can be described by a sequence a1,…,an. If ai=0, the i-th of these roads goes from village i to village n+1, otherwise it goes from village n+1 to village i, for all 1≤i≤n. 
+
+Mocha plans to go hiking with Taki this weekend. To avoid the trip being boring, they plan to go through every village exactly once. They can start and finish at any villages. Can you help them to draw up a plan?
+Input
+
+Each test contains multiple test cases.
+
+The first line contains a single integer t (1≤t≤20) — the number of test cases. Each test case consists of two lines.
+
+The first line of each test case contains a single integer n (1≤n≤104) — indicates that the number of villages is n+1.
+
+The second line of each test case contains n integers a1,a2,…,an (0≤ai≤1). If ai=0, it means that there is a road from village i to village n+1. If ai=1, it means that there is a road from village n+1 to village i.
+
+It is guaranteed that the sum of n over all test cases does not exceed 104.
+Output
+
+For each test case, print a line with n+1 integers, where the i-th number is the i-th village they will go through. If the answer doesn't exist, print −1.
+
+If there are multiple correct answers, you can print any one of them.
+
+Idea: We can model the villages and roads as a directed graph. The problem then reduces to finding a Hamiltonian path in this graph, which is a path that visits each vertex exactly once. We can use backtracking to find such a path. 
+We will start from each village and try to find a path that visits all villages exactly once. If we find such a path, we will print it. If we cannot find such a path after trying all starting villages, we will print -1.
+
+Algorithm:
+1. Create a graph based on the input.
+2. For each village, perform a depth-first search (DFS) to find a Hamiltonian path.
+3. If a Hamiltonian path is found, print it. Otherwise, print -1.
+
+
+
+
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    int t;
+    cin >> t;
+    while (t--) {
+        int n;
+        cin >> n;
+        vector<int> a(n);
+        for (int i = 0; i < n; i++) cin >> a[i];
+        
+        // Case 1: n+1 at the front — need edge n+1 -> 1, i.e. a[0] == 1
+        if (a[0] == 1) {
+            cout << n + 1;
+            for (int i = 1; i <= n; i++) cout << " " << i;
+            cout << "\n";
+            continue;
+        }
+        
+        // Case 2: n+1 at the back — need edge n -> n+1, i.e. a[n-1] == 0
+        if (a[n - 1] == 0) {
+            for (int i = 1; i <= n; i++) cout << i << " ";
+            cout << n + 1 << "\n";
+            continue;
+        }
+        
+        // Case 3: n+1 inserted between i and i+1
+        // Need a[i] == 0 (i -> n+1) and a[i+1] == 1 (n+1 -> i+1)
+        bool found = false;
+        for (int i = 0; i < n - 1; i++) {
+            if (a[i] == 0 && a[i + 1] == 1) {
+                for (int j = 1; j <= i + 1; j++) cout << j << " ";
+                cout << n + 1 << " ";
+                for (int j = i + 2; j <= n; j++) cout << j << " ";
+                cout << "\n";
+                found = true;
+                break;
+            }
+        }
+        
+        if (!found) cout << -1 << "\n";
+    }
+    return 0;
+}
+    */
