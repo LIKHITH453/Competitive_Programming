@@ -190,18 +190,83 @@ int main() {
     */
 
 
-//Function overloading
-//How to use template functions to avoid code repetition in the above code snippet
-#include<iostream>
+/*
+GCD(Greatest Common Divisor):
+The greatest common divisor (GCD) of two integers a and b, denoted as gcd(a, b), is the largest positive integer that divides both a and b without leaving a remainder.
+The most efficient way to compute the GCD of two numbers is to use the Euclidean algorithm, which is based on the principle that the GCD of two numbers also divides their difference.
+long long gcd(long long a, long long b) {
+    while (b != 0) {
+        long long temp = b;
+        b = a % b;
+        a = temp;
+    }
+    return a;
+}
+-> Time complexity: O(log(min(a, b)))
+-> Space complexity: O(1)
+other methods to compute GCD include prime factorization, but the Euclidean algorithm is generally more efficient and is the preferred method in competitive programming.
+long long gcd(long long a, long long b) {
+    if (b == 0) return a;
+    return gcd(b, a % b);
+}
+-> Time complexity: O(log(min(a, b)))
+-> Space complexity: O(log(min(a, b))) due to recursive call stack
+Eg: 36 = 2*2*3*3
+
+
+*/
+#include <bits/stdc++.h>
 using namespace std;
 
-template<typename T>
-void add (T a, long long b) {
-    cout << "Sum of two numbers: " << a * b << endl;
-}
 int main() {
-    add(5, 10); // Calls the first add function
-    add(3.5, 2.5); // Calls the second add function
-    add(289,23487298347238974);
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    
+    int t;
+    cin >> t;
+    for (int tc = 0; tc < t; ++tc) {
+        int n;
+        cin >> n;
+        vector<int> a(n);
+        for (int i = 0; i < n; ++i) cin >> a[i];
+        
+        vector<int> ops;
+        int parity = 0;   // 0 = even number of flips applied to the current suffix, 1 = odd
+        
+        // Process from right to left (i = n-1 down to 1)
+        for (int i = n - 1; i > 0; --i) {
+            int cur = a[i];
+            if (parity) cur = -cur;
+            // If the current element (after previous flips) is positive,
+            // we perform an operation at index i (1‑based) to flip the prefix up to i.
+            // This will make this element negative, but it allows earlier elements to be flipped later.
+            if (cur > 0) {
+                ops.push_back(i);   // store 0‑based index, will convert later
+                parity ^= 1;        // toggle flip parity for the left part
+            }
+        }
+        
+        // Handle the first element (index 0)
+        int first = a[0];
+        if (parity) first = -first;
+        if (first < 0) {
+            ops.push_back(0);       // flip the whole array (prefix up to 1)
+        }
+        
+        // Convert to 1‑based indices and reverse (because we collected from right to left)
+        for (int &x : ops) x++;
+        reverse(ops.begin(), ops.end());
+        
+        // Output
+        cout << ops.size() << '\n';
+        for (size_t i = 0; i < ops.size(); ++i) {
+            if (i) cout << ' ';
+            cout << ops[i];
+        }
+        cout << '\n';
+        
+        // Print a blank line after each test case except the last (to match sample)
+        if (tc < t - 1) cout << '\n';
+    }
     return 0;
 }
