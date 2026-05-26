@@ -213,60 +213,45 @@ long long gcd(long long a, long long b) {
 -> Space complexity: O(log(min(a, b))) due to recursive call stack
 Eg: 36 = 2*2*3*3
 
+Properties of GCD:
+1.gcd(a,0) = a for any integer a
+2.gcd(a,b) = gcd(b,a) (Commutative property)
+3.gcd(a,b) = gcd(a-b,b) if a >= b (Subtraction property)
+proof let d divides both a nad b a/d = k and b/d = m then a-b/d = k-m so d divides a-b 
+4.gcd(a,b) = gcd(a mod b, b) if b != 0 (Modulus property)
+5.gcd(a,b) divides both a and b
+6.gcd(a,b) can be expressed as a linear combination of a and b, i.e., there exist integers x and y such that gcd(a,b) = ax + by (Bezout's identity)
+7.gcd(a,b) is the largest integer that divides both a and b without leaving a remainder
+8.gcd(a,b) can be used to compute the least common multiple (LCM) of a and b using the formula: lcm(a,b) = (a * b) / gcd(a,b)
+
+long long lcm(long long a, long long b) {
+    return (a / gcd(a, b)) * b; // To avoid overflow
+}
+-> Time complexity: O(log(min(a, b)))
+-> Space complexity: O(1)
+
+Euclidean(modulo) -Recursive (short & clear):
+long long gcd(long long a, long long b) {
+    a = llabs(a);
+    b = llabs(b);
+    return (b ==0) ? a : gcd(b, a % b);
+}
+-> Time complexity: O(log(min(a, b)))
+-> Space complexity: O(log(min(a, b))) due to recursive call stack
+
+Iterative version of Euclidean algorithm:
+long long gcd(long long a, long long b) {
+    a = llabs(a);
+    b = llabs(b);
+    while (b != 0) {
+        long long temp = a%b;
+        a = b;
+        b = temp;
+    }
+    return a;
+}
+-> Time complexity: O(log(min(a, b)))
+-> Space complexity: O(1)
+
 
 */
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-    
-    int t;
-    cin >> t;
-    for (int tc = 0; tc < t; ++tc) {
-        int n;
-        cin >> n;
-        vector<int> a(n);
-        for (int i = 0; i < n; ++i) cin >> a[i];
-        
-        vector<int> ops;
-        int parity = 0;   // 0 = even number of flips applied to the current suffix, 1 = odd
-        
-        // Process from right to left (i = n-1 down to 1)
-        for (int i = n - 1; i > 0; --i) {
-            int cur = a[i];
-            if (parity) cur = -cur;
-            // If the current element (after previous flips) is positive,
-            // we perform an operation at index i (1‑based) to flip the prefix up to i.
-            // This will make this element negative, but it allows earlier elements to be flipped later.
-            if (cur > 0) {
-                ops.push_back(i);   // store 0‑based index, will convert later
-                parity ^= 1;        // toggle flip parity for the left part
-            }
-        }
-        
-        // Handle the first element (index 0)
-        int first = a[0];
-        if (parity) first = -first;
-        if (first < 0) {
-            ops.push_back(0);       // flip the whole array (prefix up to 1)
-        }
-        
-        // Convert to 1‑based indices and reverse (because we collected from right to left)
-        for (int &x : ops) x++;
-        reverse(ops.begin(), ops.end());
-        
-        // Output
-        cout << ops.size() << '\n';
-        for (size_t i = 0; i < ops.size(); ++i) {
-            if (i) cout << ' ';
-            cout << ops[i];
-        }
-        cout << '\n';
-        
-        // Print a blank line after each test case except the last (to match sample)
-        if (tc < t - 1) cout << '\n';
-    }
-    return 0;
-}
